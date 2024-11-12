@@ -415,7 +415,7 @@ import SpiralBindingForm from '../components/ServiceForms/SpiralBindingForm';
 import ThermalBindingForm from '../components/ServiceForms/ThermalBindingForm';
 import FileUpload from '../components/ServiceForms/FileUpload';
 import { useAlert } from '../contexts/AlertContext';
-import { uploadFilesToPinata, getFilesFromPinata } from '../utils/pinata';
+import { uploadFilesToPinata } from '../utils/pinata';
 import { useEdit } from '../contexts/EditContext';
 
 const BookServicePage = () => {
@@ -520,7 +520,8 @@ const BookServicePage = () => {
 
             console.log('old data: ', updatedFormData);
 
-            const { updatedFiles, removeFilesCIDs } = await processEditFiles(updatedFormData.files, updatedFormData.filesDetails);
+            // remoce files cids later
+            const { updatedFiles } = await processEditFiles(updatedFormData.files, updatedFormData.filesDetails);
 
 
             updatedFormData.filesDetails = updatedFiles;
@@ -623,6 +624,7 @@ const BookServicePage = () => {
                 };
                 await submitEditForm(updatedFormData);
                 setFormData({});
+                form.reset();
                 navigate('/cart');
             } else {
                 // Build updatedFormData
@@ -634,6 +636,7 @@ const BookServicePage = () => {
 
                 await submitForm(updatedFormData);
                 setFormData({});
+                form.reset();
                 setShowModal(true);
             }
         } catch (error) {

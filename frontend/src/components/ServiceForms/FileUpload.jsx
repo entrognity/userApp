@@ -101,7 +101,7 @@ const FileUpload = ({ formData, onFilesChange }) => {
 
     const removeFile = (index) => {
         const fileToRemove = files[index];
-        const pagesToRemove = fileToRemove.noOfPages;
+        // const pagesToRemove = fileToRemove.noOfPages;
         const updatedFiles = files.filter((_, i) => i !== index);
 
         setTotalSize((prevSize) => prevSize - fileToRemove.size);

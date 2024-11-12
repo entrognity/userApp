@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 
 const ServicesPage = () => {
-  const [selectedService, setSelectedService] = useState(null);
+  // const [selectedService, setSelectedService] = useState(null);
   const navigate = useNavigate();
 
   const handleServiceSelect = (service) => {
-    setSelectedService(service);
+    // setSelectedService(service);
     navigate(`/services/book?serviceID=${service.id}`);
   };
 

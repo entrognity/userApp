@@ -99,7 +99,7 @@ import { FileText, Trash2, FilePenLine } from 'lucide-react';
 
 const CartPage = () => {
   const { cartItems, totalPrice, fetchCartItems, removeItemFromCart } = useCart();
-  const [selectedItem, setSelectedItem] = useState(null);
+  // const [selectedItem, setSelectedItem] = useState(null);
   const { setEditItem } = useEdit();
   const navigate = useNavigate();
 
@@ -108,7 +108,7 @@ const CartPage = () => {
   }, [fetchCartItems]);
 
   const handleEditItemClick = (item) => {
-    setSelectedItem(item);
+    // setSelectedItem(item);
     setEditItem(item);
     navigate(`/services/book?serviceID=${item.serviceID}&mode=edit`);
   };
