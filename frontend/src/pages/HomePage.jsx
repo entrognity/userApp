@@ -6,7 +6,7 @@ const HomePage = () => {
   
     return (
       <div className="p-4 mt-16">
-        <h2 className="text-xl font-semibold mb-4">Welcome to PrintEasy</h2>
+        <h2 className="text-xl font-semibold mb-4">Welcome to PinPaper</h2>
         <div className="grid gap-4">
           <div className="p-4 bg-blue-50 rounded-lg">
             <h3 className="font-medium mb-2">Quick Print</h3>

@@ -1,25 +1,34 @@
 // src/components/Layout.jsx
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCart, User, Home, FileText, Package, Headset } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const cartItems = []; // This should come from global state management
+
+  // Access cart data from CartContext
+  const { cartItems, fetchCartItems } = useCart();
+
+  // Populate cart items when the component mounts
+  useEffect(() => {
+    fetchCartItems();
+  }, [fetchCartItems]);
 
   const renderHeader = () => (
     <div className="fixed top-0 w-full bg-white shadow-md z-50">
       <div className="flex justify-between items-center p-4">
         <h1 className="text-xl font-bold" onClick={() => {
-          navigate('/')}}>
-            PinPaper
+          navigate('/')
+        }}>
+          PinPaper
         </h1>
         <div className="flex gap-4">
           <div className="relative">
-            <ShoppingCart 
-              className="w-6 h-6 cursor-pointer" 
+            <ShoppingCart
+              className={`w-6 h-6 cursor-pointer ${location.pathname === '/cart' ? 'text-blue-600' : 'text-gray-600'}`}
               onClick={() => navigate('/cart')}
             />
             {cartItems.length > 0 && (
@@ -28,8 +37,8 @@ const Layout = ({ children }) => {
               </span>
             )}
           </div>
-          <User 
-            className="w-6 h-6 cursor-pointer" 
+          <User
+            className={`w-6 h-6 cursor-pointer ${location.pathname === '/account' ? 'text-blue-600' : 'text-gray-600'}`}
             onClick={() => navigate('/account')}
           />
         </div>
@@ -46,28 +55,28 @@ const Layout = ({ children }) => {
     return (
       <div className="fixed bottom-0 w-full bg-white border-t">
         <div className="flex justify-around p-4">
-          <div 
+          <div
             className={`flex flex-col items-center cursor-pointer ${location.pathname === '/' ? 'text-blue-600' : 'text-gray-600'}`}
             onClick={() => navigate('/')}
           >
             <Home className="w-6 h-6" />
             <span className="text-xs">Home</span>
           </div>
-          <div 
+          <div
             className={`flex flex-col items-center cursor-pointer ${location.pathname === '/services' ? 'text-blue-600' : 'text-gray-600'}`}
             onClick={() => navigate('/services')}
           >
             <FileText className="w-6 h-6" />
             <span className="text-xs">Book</span>
           </div>
-          <div 
+          <div
             className={`flex flex-col items-center cursor-pointer ${location.pathname === '/orders' ? 'text-blue-600' : 'text-gray-600'}`}
             onClick={() => navigate('/orders')}
           >
             <Package className="w-6 h-6" />
             <span className="text-xs">Orders</span>
           </div>
-          <div 
+          <div
             className={`flex flex-col items-center cursor-pointer ${location.pathname === '/helpline' ? 'text-blue-600' : 'text-gray-600'}`}
             onClick={() => navigate('/helpline')}
           >

@@ -1,3 +1,5 @@
+const idGeneration = require('../utils/idGeneration');
+
 const mongoose = require('mongoose');
 
 const OrdersSchema = new mongoose.Schema({
@@ -45,7 +47,7 @@ const OrdersSchema = new mongoose.Schema({
     orderStatus: {
         type: String,
         required: true,
-        enum: ['requested','processing', 'completed', 'rejected'] 
+        enum: ['requested', 'processing', 'completed', 'rejected']
     }
 }, {
     timestamps: true  // Automatically add createdAt and updatedAt fields
@@ -55,19 +57,53 @@ const Orders = mongoose.model('Orders', OrdersSchema);
 
 
 
+
+const FileSchema = new mongoose.Schema({
+    cid: {
+        type: String,
+        required: true,
+    },
+    name: {
+        type: String,
+        required: true,
+    },
+    size: {
+        type: Number,
+        required: true,
+    },
+    noOfPages: {
+        type: Number,
+         required: true
+    },
+    type: {         // e.g., "application/pdf"
+        type: String,
+        required: true,
+    }         
+}, { _id: false });
+
 const OrderArticlesSchema = new mongoose.Schema({
     userID: {
-        type: String,
-        required: true
+        type: String
     },
     articleID: {
         type: String,
-        required: true,
         unique: true
     },
     serviceID: {
         type: Number,
         required: true,
+    },
+    // files: {
+    //     type: Map,
+    //     of: new mongoose.Schema({
+    //         type: Map,
+    //         of: Number
+    //     }, { _id: false }),
+    //     required: true
+    // },
+    filesDetails: {
+        type: [FileSchema],
+        required: true
     },
     filesUri: {
         type: [String],  // Assuming this is an array of file URIs
@@ -84,10 +120,10 @@ const OrderArticlesSchema = new mongoose.Schema({
     printColor: {
         type: String,
         required: true,
-        enum: ['BW', 'AllColor', 'BWandColorMix']
+        enum: ['BW', 'Color', 'BWandColorMix']
     },
     bwPageNos: {      // remove this, write logic (total - color)
-        type: [Number]
+        type: String
     },
     colorPagesNos: {
         type: [Number]
@@ -95,19 +131,35 @@ const OrderArticlesSchema = new mongoose.Schema({
     printSides: {
         type: String,
         required: true,
-        enum: ['SingleSide', 'BothSides']
+        enum: ['singleSide', 'bothSides']
     },
     note: {
         type: String,
-        required: true
     },
     articleAmount: {
         type: Number,
         required: true
+    },
+    articleStatus: {
+        type: String,
+        required: true,
+        enum: ['inCart', 'ordered'],
+        default: 'inCart'
     }
 }, {
     discriminatorKey: 'articleType',
     timestamps: true  // Automatically add createdAt and updatedAt fields
+});
+
+OrderArticlesSchema.pre('save', async function (next) {  // Change to a regular function
+    if (!this.articleID) {
+        try {
+            this.articleID = await idGeneration.generateArticleID();
+        } catch (err) {
+            return next(err); // Pass the error to Mongoose
+        }
+    }
+    next();
 });
 
 const OrderArticles = mongoose.model('OrderArticles', OrderArticlesSchema);

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// src/components/ServiceForms/FileUpload.jsx
+import React, { useState, useEffect } from 'react';
 import { FileText, Trash2 } from 'lucide-react';
 import getPagesCount from '../../utils/countPages';
 
@@ -6,6 +7,18 @@ const FileUpload = ({ formData, onFilesChange }) => {
     const [files, setFiles] = useState([]);
     const [totalSize, setTotalSize] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+
+    useEffect(() => {
+        // Initialize with pre-populated files if they exist
+        if (formData.files && formData.files.length > 0) {
+            setFiles(formData.files);
+
+            // below lines code is to be reviewed and its affect
+            const newTotalSize = formData.files.reduce((sum, file) => sum + file.size, 0);
+            setTotalSize(newTotalSize);
+            setTotalPages(formData.noOfPages);
+        }
+    }, [formData.files, formData.noOfPages]);
 
     const formatFileName = (name) => {
         const maxLength = 20;
@@ -92,7 +105,7 @@ const FileUpload = ({ formData, onFilesChange }) => {
         const updatedFiles = files.filter((_, i) => i !== index);
 
         setTotalSize((prevSize) => prevSize - fileToRemove.size);
-        const prevNoOfPages = formData.noOfPages;
+        // const prevNoOfPages = formData.noOfPages;
         // formData.noOfPages = prevNoOfPages - pagesToRemove; 
         setFiles(updatedFiles);
         onFilesChange(updatedFiles);
@@ -115,14 +128,14 @@ const FileUpload = ({ formData, onFilesChange }) => {
                         />
                     </svg>
                     Upload
-                    <input id="uploadFile1" type="file" onChange={handleFileUpload} multiple className="hidden" required />
+                    <input id="uploadFile1" type="file" onChange={handleFileUpload} multiple className="hidden" />
                 </label>
 
                 <p className="text-sm mt-3 text-gray-500">
-                <span style={{ color: "blue", fontWeight:"bold" }}>Recommended file type is PDF</span> <br />
-                Allowed files type: <span style={{ color: "blue" }}>PDF, DOC, DOCX.</span> <br />
-                If yours is a <span style={{ color: "red" }}>PPT, PPTX, JPG, JPEG, PNG</span> convert it to PDF <br />
-                (Max 50MB each, up to 5 files, Total ≤ 200MB)
+                    <span style={{ color: "blue", fontWeight: "bold" }}>Recommended file type is PDF</span> <br />
+                    Allowed files type: <span style={{ color: "blue" }}>PDF, DOC, DOCX.</span> <br />
+                    If yours is a <span style={{ color: "red" }}>PPT, PPTX, JPG, JPEG, PNG</span> convert it to PDF <br />
+                    (Max 50MB each, up to 5 files, Total ≤ 200MB)
                 </p>
 
                 {files.length > 0 && (
@@ -130,15 +143,7 @@ const FileUpload = ({ formData, onFilesChange }) => {
                         {files.map((file, index) => (
                             <li key={index} className="flex items-center justify-between bg-white shadow-sm p-4 rounded-lg border border-gray-200">
                                 <div className="flex items-center">
-                                    {file.type.startsWith('image/') ? (
-                                        <img
-                                            src={URL.createObjectURL(file)}
-                                            alt={file.name}
-                                            className="w-10 h-10 rounded-lg object-cover"
-                                        />
-                                    ) : (
-                                        <FileText className="w-8 h-8 text-blue-500 mr-2" />
-                                    )}
+                                    <FileText className="w-8 h-8 text-blue-500 mr-2" />
                                     <div>
                                         <p className="text-sm text-left font-medium text-gray-800 truncated">{formatFileName(file.name)}</p>
                                         <p className="text-xs text-left text-gray-500">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>

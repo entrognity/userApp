@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { Operators } = require('./operatorModel');
 const { OrderArticles } = require('./ordersModel');
 
 // Services
@@ -19,7 +18,7 @@ const ServicesSchema = new mongoose.Schema({
     },
     oprCollectionName: {
         type: String,
-        required: true 
+        required: true
     },
     usrCollectionName: {
         type: String,
@@ -103,31 +102,40 @@ const ServicesTrackings = mongoose.model('ServicesTrackings', servicesTrackingsS
 
 
 
-// custom services models
 
-const projthesBindingOprSchema = mongoose.Schema({
-    serviceID: {
-        type: String,
+// Pricing schema
+const pricingSchema = new mongoose.Schema({
+    operatorID: {
+        type: String
+    },
+    BW: {
+        type: Map,
+        of: new mongoose.Schema({
+            type: Map,
+            of: new mongoose.Schema({
+                type: Map,
+                of: Number
+            }, { _id: false })
+        }, { _id: false }),
         required: true
     },
-    bwPaperPricesOneside: {
+    Color: {
         type: Map,
-        of: Number, // Each GSM key will map to a number (price)
+        of: new mongoose.Schema({
+            type: Map,
+            of: new mongoose.Schema({
+                type: Map,
+                of: Number
+            }, { _id: false })
+        }, { _id: false }),
         required: true
     },
-    bwPaperPricesBothside: {
-        type: Map,
-        of: Number, // Each GSM key will map to a number (price)
+    spiralBindingPrice: {
+        type: Number,
         required: true
     },
-    colorPaperPricesOnesides: {
-        type: Map,
-        of: Number, // Each GSM key will map to a number (price)
-        required: true
-    },
-    colorPaperPricesBothsides: {
-        type: Map,
-        of: Number, // Each GSM key will map to a number (price)
+    thermalBindingPrice: {
+        type: Number,
         required: true
     },
     projthesBindingPrice: {
@@ -136,8 +144,19 @@ const projthesBindingOprSchema = mongoose.Schema({
     }
 });
 
-const ProjthesBindingOprs = mongoose.model('ProjthesBindingOprs', projthesBindingOprSchema);
+const Pricings = mongoose.model('Pricings', pricingSchema);
 
+
+
+
+
+
+
+
+
+
+
+// custom services models
 
 const projthesBindingUsrSchema = mongoose.Schema({
     paperGSM: {
@@ -205,7 +224,7 @@ const servicesTemplatesSchema = mongoose.Schema({
         type: String,
         required: true
     }
-},{
+}, {
     timestamps: true
 });
 
@@ -218,7 +237,7 @@ module.exports = {
     ServicesPrices,
     ServicesTrackings,
 
-    ProjthesBindingOprs,
+    Pricings,
     ProjthesBindingUsrs,
     spiralBindingUsrs,
     thermalBindingUsrs,

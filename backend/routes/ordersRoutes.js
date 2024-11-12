@@ -4,5 +4,6 @@
  
 
  router.post('/addToCart', ordersControllers.addToCart);
+ router.get('/priceTest', ordersControllers.priceTest);
 
  module.exports = router;
