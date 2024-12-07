@@ -13,7 +13,6 @@ const OrdersSchema = new mongoose.Schema({
     },
     orderID: {
         type: String,
-        required: true,
         unique: true
     },
     articleIDs: {
@@ -30,10 +29,14 @@ const OrdersSchema = new mongoose.Schema({
         required: true,
         enum: ["Yes", "No"]
     },
-    deliveryOption: {
+    // deliveryOption: {
+    //     type: String,
+    //     required: true,
+    //     enum: ['tbd', 'Self', '3rdParty']  // Add delivery options as per requirement
+    // },
+    deliveryTypeID: {   // LATER REMOVE THIS, COZ PRESENT IN OrderDeliveryDetails
         type: String,
-        required: true,
-        enum: ['Self', '3rdParty']  // Add delivery options as per requirement
+        required: true
     },
     orderAmount: {
         type: Number,
@@ -51,6 +54,17 @@ const OrdersSchema = new mongoose.Schema({
     }
 }, {
     timestamps: true  // Automatically add createdAt and updatedAt fields
+});
+
+OrdersSchema.pre('save', async function (next) {
+    if(!this.orderID){
+        try {
+            this.orderID = await idGeneration.generateOrderID(this.userID);
+        } catch(err) {
+            return next(err);
+        }
+    }
+    next();
 });
 
 const Orders = mongoose.model('Orders', OrdersSchema);
